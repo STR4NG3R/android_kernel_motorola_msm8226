@@ -93,15 +93,19 @@ struct zram_meta {
 	struct table *table;
 	struct zs_pool *mem_pool;
 	struct mutex buffer_lock; /* protect compress buffers */
+<<<<<<< HEAD:drivers/staging/zram/zram_drv.h
 };
 
 struct zram_slot_free {
 	unsigned long index;
 	struct zram_slot_free *next;
+=======
+>>>>>>> 9a8afb3... zram: remove zram->lock in read path and change it with mutex:drivers/block/zram/zram_drv.h
 };
 
 struct zram {
 	struct zram_meta *meta;
+<<<<<<< HEAD:drivers/staging/zram/zram_drv.h
 <<<<<<< HEAD:drivers/staging/zram/zram_drv.h
 	struct rw_semaphore lock; /* protect compression buffers, table,
 				   * 32bit stat counters against concurrent
@@ -110,6 +114,8 @@ struct zram {
 	struct work_struct free_work;  /* handle pending free request */
 	struct zram_slot_free *slot_free_rq; /* list head of free request */
 
+=======
+>>>>>>> 9a8afb3... zram: remove zram->lock in read path and change it with mutex:drivers/block/zram/zram_drv.h
 =======
 >>>>>>> 9a8afb3... zram: remove zram->lock in read path and change it with mutex:drivers/block/zram/zram_drv.h
 	struct request_queue *queue;
