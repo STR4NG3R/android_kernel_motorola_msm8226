@@ -92,6 +92,7 @@ struct zram_meta {
 	void *compress_buffer;
 	struct table *table;
 	struct zs_pool *mem_pool;
+	struct mutex buffer_lock; /* protect compress buffers */
 };
 
 struct zram_slot_free {
@@ -101,6 +102,7 @@ struct zram_slot_free {
 
 struct zram {
 	struct zram_meta *meta;
+<<<<<<< HEAD:drivers/staging/zram/zram_drv.h
 	struct rw_semaphore lock; /* protect compression buffers, table,
 				   * 32bit stat counters against concurrent
 				   * notifications, reads and writes */
@@ -108,6 +110,8 @@ struct zram {
 	struct work_struct free_work;  /* handle pending free request */
 	struct zram_slot_free *slot_free_rq; /* list head of free request */
 
+=======
+>>>>>>> 9a8afb3... zram: remove zram->lock in read path and change it with mutex:drivers/block/zram/zram_drv.h
 	struct request_queue *queue;
 	struct gendisk *disk;
 	int init_done;
