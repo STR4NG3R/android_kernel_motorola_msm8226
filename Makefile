@@ -362,8 +362,14 @@ CFLAGS_MODULE   = -DMODULE -fno-pic -mcpu=cortex-a7 \
                   -mvectorize-with-neon-quad -munaligned-access
 AFLAGS_MODULE   =
 <<<<<<< HEAD
+<<<<<<< HEAD
 LDFLAGS_MODULE  = --strip-debug
 CFLAGS_KERNEL	=
+=======
+LDFLAGS_MODULE  =
+CFLAGS_KERNEL	= -mcpu=cortex-a7 -mtune=cortex-a7 \
+                  -marm -mfpu=neon-vfpv4 -mvectorize-with-neon-quad -munaligned-access
+>>>>>>> 202de33... Makefile: Add some Cortex-A7 Optimizations
 =======
 LDFLAGS_MODULE  =
 CFLAGS_KERNEL	= -mcpu=cortex-a7 -mtune=cortex-a7 \
@@ -386,8 +392,14 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 <<<<<<< HEAD
+<<<<<<< HEAD
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks
+=======
+		   -Wno-format-security -Wno-sizeof-pointer-memaccess \
+		   -fno-delete-null-pointer-checks \
+                   -marm -mfpu=neon-vfpv4
+>>>>>>> 202de33... Makefile: Add some Cortex-A7 Optimizations
 =======
 		   -Wno-format-security -Wno-sizeof-pointer-memaccess \
 		   -fno-delete-null-pointer-checks \
