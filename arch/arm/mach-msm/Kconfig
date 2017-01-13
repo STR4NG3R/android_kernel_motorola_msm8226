@@ -1889,12 +1889,12 @@ config MSM_CPU_FREQ_SET_MIN_MAX
 config MSM_CPU_FREQ_MAX
 	int "Max CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
-	default 384000
+	default 1728000
 
 config MSM_CPU_FREQ_MIN
 	int "Min CPU Frequency"
 	depends on MSM_CPU_FREQ_SET_MIN_MAX
-	default 245760
+	default 9600
 
 endif # CPU_FREQ_MSM
 
@@ -2683,6 +2683,13 @@ config PM8XXX_RPC_VIBRATOR
 	  Enable the vibrator support on MSM over RPC. The vibrator
 	  is connected on the PM8XXX PMIC. Say Y if you want to enable
 	  this feature.
+
+config ALESSA_PLUG
+	bool "Enable plugging down/up of cores using powersuspend"
+	help
+	  This driver uses powersuspend to take down the cpu cores
+	  on a dual core device.
+	  Later this maybe be a reemplace of hotplug.
 
 config MSM_SPM_V1
 	bool "Driver support for SPM Version 1"

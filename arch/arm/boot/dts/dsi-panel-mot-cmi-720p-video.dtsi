@@ -36,7 +36,7 @@
                 qcom,mdss-dsi-h-back-porch = <64>;
                 qcom,mdss-dsi-h-pulse-width = <8>;
                 qcom,mdss-dsi-h-sync-skew = <0>;
-                qcom,mdss-dsi-v-back-porch = <1>;
+                qcom,mdss-dsi-v-back-porch = <7>;
                 qcom,mdss-dsi-v-front-porch = <6>;
                 qcom,mdss-dsi-v-pulse-width = <1>;
                 qcom,mdss-dsi-h-left-border = <0>;
@@ -46,21 +46,21 @@
                 qcom,mdss-dsi-bpp = <24>;
                 qcom,mdss-dsi-underflow-color = <0xff>;
                 qcom,mdss-dsi-border-color = <0>;
-		qcom,mdss-dsi-cont-splash-skip-ov-handoff;
+		qcom,splash-no-solid-fill;
 
-                qcom,mdss-dsi-tune-h-front-porch = <62>;
-                qcom,mdss-dsi-tune-h-back-porch = <62>;
-                qcom,mdss-dsi-tune-h-pulse-width = <8>;
-                qcom,mdss-dsi-tune-v-back-porch = <15>;
-                qcom,mdss-dsi-tune-v-front-porch = <15>;
-                qcom,mdss-dsi-tune-v-pulse-width = <1280>;
+                qcom,mdss-dsi-tune-h-front-porch = <96>;
+                qcom,mdss-dsi-tune-h-back-porch = <96>;
+                qcom,mdss-dsi-tune-h-pulse-width = <4>;
+                qcom,mdss-dsi-tune-v-back-porch = <50>;
+                qcom,mdss-dsi-tune-v-front-porch = <1086>;
+                qcom,mdss-dsi-tune-v-pulse-width = <2>;
 
 		qcom,mdss-dsi-on-command = [
 			29 01 00 00 00 00 02 ff 01
 			29 01 00 00 00 00 02 4c 00
 			29 01 00 00 00 00 02 fb 01
 			29 01 00 00 00 00 02 ff 00
-			29 01 00 00 00 00 04 3b 03 01 03
+			29 01 00 00 00 00 04 3b 03 04 03
 			29 01 00 00 00 00 02 fb 01
 			29 01 00 00 78 00 02 11 00      /* exit sleep */
 			29 01 00 00 00 00 02 51 ff      /* led_pwm1 */
@@ -89,6 +89,10 @@
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-pan-enable-dynamic-fps;
+		qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode";
+		qcom,mdss-dsi-min-refresh-rate = <45>;
+		qcom,ulps-enabled;
 
 		qcom,mdss-dsi-esd-det-mode = <1>;
 
@@ -143,7 +147,7 @@
 		qcom,mdss-dsi-h-back-porch = <64>;
 		qcom,mdss-dsi-h-pulse-width = <8>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
-		qcom,mdss-dsi-v-back-porch = <1>;
+		qcom,mdss-dsi-v-back-porch = <7>;
 		qcom,mdss-dsi-v-front-porch = <6>;
 		qcom,mdss-dsi-v-pulse-width = <1>;
 		qcom,mdss-dsi-h-left-border = <0>;
@@ -153,14 +157,14 @@
 		qcom,mdss-dsi-bpp = <24>;
 		qcom,mdss-dsi-underflow-color = <0xff>;
 		qcom,mdss-dsi-border-color = <0>;
-		qcom,mdss-dsi-cont-splash-skip-ov-handoff;
+		qcom,splash-no-solid-fill;
 
-		qcom,mdss-dsi-tune-h-front-porch = <62>;
-		qcom,mdss-dsi-tune-h-back-porch = <62>;
-		qcom,mdss-dsi-tune-h-pulse-width = <8>;
-		qcom,mdss-dsi-tune-v-back-porch = <15>;
-		qcom,mdss-dsi-tune-v-front-porch = <15>;
-		qcom,mdss-dsi-tune-v-pulse-width = <1280>;
+		qcom,mdss-dsi-tune-h-front-porch = <96>;
+		qcom,mdss-dsi-tune-h-back-porch = <96>;
+		qcom,mdss-dsi-tune-h-pulse-width = <4>;
+		qcom,mdss-dsi-tune-v-back-porch = <50>;
+		qcom,mdss-dsi-tune-v-front-porch = <1086>;
+		qcom,mdss-dsi-tune-v-pulse-width = <2>;
 
 		qcom,mdss-dsi-on-command = [
 			29 01 00 00 00 00 02 ff 03
@@ -201,7 +205,7 @@
 			29 01 00 00 00 00 02 4c 00
 			29 01 00 00 00 00 02 fb 01
 			29 01 00 00 00 00 02 ff 00
-			29 01 00 00 00 00 04 3b 03 01 03
+			29 01 00 00 00 00 04 3b 03 04 03
 			29 01 00 00 00 00 02 fb 01
 			29 01 00 00 78 00 02 11 00      /* exit sleep */
 			29 01 00 00 00 00 02 ff 04
@@ -233,6 +237,10 @@
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-pan-enable-dynamic-fps;
+		qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode";
+		qcom,mdss-dsi-min-refresh-rate = <45>;
+		qcom,ulps-enabled;
 
 		qcom,mdss-dsi-esd-det-mode = <1>;
 
@@ -287,7 +295,7 @@
 		qcom,mdss-dsi-h-back-porch = <64>;
 		qcom,mdss-dsi-h-pulse-width = <8>;
 		qcom,mdss-dsi-h-sync-skew = <0>;
-		qcom,mdss-dsi-v-back-porch = <1>;
+		qcom,mdss-dsi-v-back-porch = <7>;
 		qcom,mdss-dsi-v-front-porch = <6>;
 		qcom,mdss-dsi-v-pulse-width = <1>;
 		qcom,mdss-dsi-h-left-border = <0>;
@@ -297,14 +305,14 @@
 		qcom,mdss-dsi-bpp = <24>;
 		qcom,mdss-dsi-underflow-color = <0xff>;
 		qcom,mdss-dsi-border-color = <0>;
-		qcom,mdss-dsi-cont-splash-skip-ov-handoff;
+		qcom,splash-no-solid-fill;
 
-		qcom,mdss-dsi-tune-h-front-porch = <62>;
-		qcom,mdss-dsi-tune-h-back-porch = <62>;
-		qcom,mdss-dsi-tune-h-pulse-width = <8>;
-		qcom,mdss-dsi-tune-v-back-porch = <15>;
-		qcom,mdss-dsi-tune-v-front-porch = <15>;
-		qcom,mdss-dsi-tune-v-pulse-width = <1280>;
+		qcom,mdss-dsi-tune-h-front-porch = <96>;
+		qcom,mdss-dsi-tune-h-back-porch = <96>;
+		qcom,mdss-dsi-tune-h-pulse-width = <4>;
+		qcom,mdss-dsi-tune-v-back-porch = <50>;
+		qcom,mdss-dsi-tune-v-front-porch = <1086>;
+		qcom,mdss-dsi-tune-v-pulse-width = <2>;
 
 		qcom,mdss-dsi-on-command = [
 			29 01 00 00 00 00 02 ba 01
@@ -336,6 +344,10 @@
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-pan-enable-dynamic-fps;
+		qcom,mdss-dsi-pan-fps-update = "dfps_immediate_porch_mode";
+		qcom,mdss-dsi-min-refresh-rate = <45>;
+		qcom,ulps-enabled;
 
 		qcom,mdss-dsi-esd-det-mode = <1>;
 
