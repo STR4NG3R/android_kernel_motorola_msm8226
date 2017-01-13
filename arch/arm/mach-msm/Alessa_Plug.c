@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  *
  * A simple hotplugging driver optimized for Quad Core CPUs
- * you need to add my Copyright if you use this code. and my name on it.
  */
 
 /*In the present state the driver only works with Quad core devices. It plugs down 3 cores
@@ -38,7 +37,6 @@
  * v1.4.4 fix some logic
  * v1.4.5 code cleanup
  * v2.0.0 Improve hotplug algorithm
- * v2.1.0 Now compatible with 2 cores to 8 cores.
  */
 #include <asm/cputime.h>
 #include <linux/module.h>
@@ -55,30 +53,32 @@
 
 #define ALESSAPLUG "AlessaPlug"
 #define ALESSA_VERSION 2
-#define ALESSA_SUB_VERSION 1
+#define ALESSA_SUB_VERSION 0
 #define ALESSA_MAINTENANCE 0
 
 //disable messages
 #define DEBUGMODE 0
 
+static int suspend_cpu_num = 2;
+static int resume_cpu_num = 3;
+static int endurance_level = 0;
+static int device_cpu = 4;
+static int core_limit = 4;
+
 #define CPU_LOAD_THRESHOLD    (65)
-#define MIN_CPU_LOAD_THRESHOLD (10)
+
 #define DEF_SAMPLING_MS (500)
-#define MIN_SAMPLING_MS (50)
+
 //Define the min time of the cpu are up
 #define CPU_MIN_TIME_UP (750)
-#define TOUCH_BOOST_ENABLED (0)
 
 static bool isSuspended = false;
-static int suspend_cpu_num = 2, resume_cpu_num = (NR_CPUS -1);
-static int endurance_level = 0;
-static int core_limit = NR_CPUS;
 struct notifier_block lcd_worker;
 static int sampling_time = DEF_SAMPLING_MS;
 static int load_threshold = CPU_LOAD_THRESHOLD;
 
 static int alessa_HP_enabled = 1;//To enable or disable hotplug
-static int touch_boost_enabled = TOUCH_BOOST_ENABLED; //To enable Touch boost
+static int touch_boost_enabled = 0; //To enable Touch boost
 
 //Resume
 static struct workqueue_struct *Alessa_plug_resume_wq;
@@ -90,8 +90,8 @@ static struct delayed_work Alessa_plug_work;
 static struct workqueue_struct *Alessa_plug_boost_wq;
 static struct delayed_work Alessa_plug_touch_boost;
 //CPU CHARGE
-static unsigned int last_load[8] ={0};
-static int now[8], last_time[8];
+static unsigned int last_load[4] ={0, 0, 0, 0};
+static int now[4], last_time[4];
 
 struct cpu_load_data{
 	u64 prev_cpu_idle;
@@ -105,29 +105,64 @@ struct cpu_load_data{
 
 static DEFINE_PER_CPU(struct cpu_load_data, cpuload);
 
-// add endurance levels for octa quad and dual core
-// 2 for octa and quad 1 for dual
+//HAX
+static inline u64 get_cpu_idle_time_jiffy(unsigned int cpu, u64 *wall)
+{
+	u64 idle_time;
+	u64 cur_wall_time;
+	u64 busy_time;
+
+	cur_wall_time = jiffies64_to_cputime64(get_jiffies_64());
+
+	busy_time = kcpustat_cpu(cpu).cpustat[CPUTIME_USER];
+	busy_time += kcpustat_cpu(cpu).cpustat[CPUTIME_SYSTEM];
+	busy_time += kcpustat_cpu(cpu).cpustat[CPUTIME_IRQ];
+	busy_time += kcpustat_cpu(cpu).cpustat[CPUTIME_SOFTIRQ];
+	busy_time += kcpustat_cpu(cpu).cpustat[CPUTIME_STEAL];
+	busy_time += kcpustat_cpu(cpu).cpustat[CPUTIME_NICE];
+
+	idle_time = cur_wall_time - busy_time;
+	if (wall)
+		*wall = cputime_to_usecs(cur_wall_time);
+
+	return cputime_to_usecs(idle_time);
+}
+
+u64 get_cpu_idle_time(unsigned int cpu, u64 *wall, int io_busy)
+{
+	u64 idle_time = get_cpu_idle_time_us(cpu, io_busy ? wall : NULL);
+
+	if (idle_time == -1ULL)
+		return get_cpu_idle_time_jiffy(cpu, wall);
+	else if (!io_busy)
+		idle_time += get_cpu_iowait_time_us(cpu, wall);
+
+	return idle_time;
+}
+EXPORT_SYMBOL_GPL(get_cpu_idle_time);
+
+//
 static inline void offline_cpu(void)
 {
 	unsigned int cpu;
 	switch(endurance_level){
 	case 1:
-		if(suspend_cpu_num >= NR_CPUS / 2)
-			suspend_cpu_num = NR_CPUS / 2;
+		if(suspend_cpu_num >= 3)
+			suspend_cpu_num = 3;
 	break;
 	case 2:
-		if(NR_CPUS >= 4 && suspend_cpu_num > NR_CPUS / 4)
-			suspend_cpu_num = NR_CPUS / 4;
+		if(suspend_cpu_num >= 2)
+			suspend_cpu_num = 2;
 	break;
 	default:
 	break;
 }
-	for(cpu = NR_CPUS - 1; cpu >(suspend_cpu_num - 1); cpu--) {
+	for(cpu = 3; cpu >(suspend_cpu_num - 1); cpu--) {
 		if(cpu_online(cpu))
 			cpu_down(cpu);
 }
 
-	pr_info("%s: %d cpus were offline\n", ALESSAPLUG, (NR_CPUS - suspend_cpu_num));
+	pr_info("%s: %d cpus were offline\n", ALESSAPLUG, (device_cpu - suspend_cpu_num));
 }
 
 static inline void cpu_online_all(void)
@@ -135,23 +170,22 @@ static inline void cpu_online_all(void)
 
 	unsigned int cpu;
 	switch(endurance_level){
-		case 0:
-		resume_cpu_num =(NR_CPUS - 1);
-		break;
 	case 1:
-		if(resume_cpu_num > (NR_CPUS / 2) - 1 || resume_cpu_num == 1)
-		resume_cpu_num = ((NR_CPUS / 2) - 1);
+		if(resume_cpu_num > 2 || resume_cpu_num == 1)
+		resume_cpu_num = 2;
 	break;
 	case 2:
-		if(NR_CPUS >= 4 && resume_cpu_num > ((NR_CPUS / 4) -1))
-			resume_cpu_num = ((NR_CPUS / 4) -1);
+		if(resume_cpu_num > 1)
+			resume_cpu_num =1;
+	break;
+	case 0:
+	if(resume_cpu_num < 3)
+		resume_cpu_num =3;
 	break;
 	default:
 	break;
 	}
 
-	if(DEBUGMODE)
-			pr_info("%s: resume_cpu_num = %d\n", ALESSAPLUG, resume_cpu_num);
 for(cpu = 1; cpu <= resume_cpu_num; cpu++)
 {
 	if(cpu_is_offline(cpu))
@@ -165,7 +199,7 @@ pr_info("%s: all cpu were online\n", ALESSAPLUG);
 static void __ref alessa_plug_boost_work_fn(struct work_struct *work)
 {
 	int cpu;
-	for(cpu = 1; cpu < NR_CPUS; cpu++){
+	for(cpu = 1; cpu < 4; cpu++){
 		if(cpu_is_offline(cpu))
 			cpu_up(cpu);
 	}
@@ -253,7 +287,7 @@ static ssize_t alessa_plug_suspend_cpu_store(struct kobject *kobj, struct kobj_a
 {//This check How many cores are active
 	int val;
 	sscanf(buf, "%d", &val);
-	if(val < 1 || val > NR_CPUS)
+	if(val < 1 || val > 3)
 		pr_info("%s: suspend cpus off-limits\n", ALESSAPLUG);
 	else
 		suspend_cpu_num = val;
@@ -274,7 +308,7 @@ static ssize_t __ref alessa_plug_endurance_store(struct kobject *kobj, struct ko
 	case 0:
 	case 1:
 	case 2:
-		if(endurance_level!=val && !(endurance_level > 1 && NR_CPUS < 4)) {
+		if(endurance_level!=val) {
 		endurance_level = val;
 		offline_cpu();
 		cpu_online_all();
@@ -296,7 +330,7 @@ static ssize_t __ref alessa_plug_sampling_store(struct kobject *kobj, struct kob
 {
 	int val;
 	sscanf(buf, "%d", &val);
-	if(val > MIN_SAMPLING_MS)
+	if(val > 50)
 		sampling_time = val;
 	return count;
 }
@@ -416,21 +450,21 @@ static void __cpuinit alessa_plug_resume_work_fn(struct work_struct *work)
 static void __cpuinit alessa_plug_work_fn(struct work_struct *work)
 {
 	int i;
-	unsigned int load[8], average_load[8];
+	unsigned int load[4], average_load[4];
 
 	switch(endurance_level)
 {
 	case 0:
-		core_limit = NR_CPUS;
+		core_limit = 4;
 	break;
 	case 1:
-		core_limit = NR_CPUS / 2;
+		core_limit = 2;
 	break;
-	case 2:
-		core_limit = NR_CPUS / 4;
-	break;
+	/*case 2:
+		core_limit = 1;
+	break;*/
 	default:
-		core_limit = NR_CPUS;
+		core_limit = 4;
 	break;
 	}
 	for(i=0; i < core_limit; i++){
@@ -448,7 +482,7 @@ static void __cpuinit alessa_plug_work_fn(struct work_struct *work)
 	{
 		if(DEBUGMODE)
 	pr_info("%s: Bringing back cpu %d\n", ALESSAPLUG, i);
-		if(!((i+1) > NR_CPUS)){
+		if(!((i+1) > 3)){
 					last_time[i+1] = ktime_to_ms(ktime_get());
 		cpu_up(i+1);
 
@@ -511,8 +545,7 @@ static int lcd_notifier_callback(struct notifier_block *nb,
 
 static ssize_t alessa_plug_ver_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
-//       return sprintf(buf, "Alessa_Plug %u.%u.%u", ALESSA_VERSION, ALESSA_SUB_VERSION, ALESSA_MAINTENANCE);
-       return sprintf(buf, "%u.%u.%u", ALESSA_VERSION, ALESSA_SUB_VERSION, ALESSA_MAINTENANCE);
+       return sprintf(buf, "Alessa_Plug %u.%u.%u", ALESSA_VERSION, ALESSA_SUB_VERSION, ALESSA_MAINTENANCE);
 }
 
 static struct kobj_attribute alessa_plug_ver_attribute =
@@ -626,5 +659,5 @@ static int __init alessa_plug_init(void)
 
 MODULE_LICENSE("GPL and additional rights");
 MODULE_AUTHOR("Carlos "klozz" Jesus <klozz707@gmail.com");
-MODULE_DESCRIPTION("Hotplug driver for MSM SoC's");
+MODULE_DESCRIPTION("Hotplug driver for QuadCore CPU");
 late_initcall(alessa_plug_init);
