@@ -60,54 +60,93 @@ static struct msm_bus_scale_pdata bus_client_pdata = {
 };
 
 static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p1[] = {
-	{ 1,  300000, PLL0,    4, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  384000, ACPUPLL, 5, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  600000, PLL0,    4, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  787200, ACPUPLL, 5, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  998400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1094400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 0, 1190400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
+    // Underclock frequencies (96 to 249 MHz): use 855mV to 875mV
+ 	{ 1,   96000, ACPUPLL, 5, 2,   855000,   855000, 4 },
+ 	{ 1,  192000, ACPUPLL, 5, 2,   865000,   865000, 4 },
+ 	{ 1,  249600, ACPUPLL, 5, 2,   875000,   875000, 4 },
+ 	// Standard frequencies part 1 (300 to 787 MHz): use 900mV to 960mV
+ 	{ 1,  300000, PLL0,    4, 2,   900000,   900000, 4 },
+ 	{ 1,  384000, ACPUPLL, 5, 2,   920000,   920000, 4 },
+ 	{ 1,  600000, PLL0,    4, 0,   940000,   940000, 6 },
+ 	{ 1,  787200, ACPUPLL, 5, 0,   960000,   960000, 6 },
+ 	// Standard frequencies part 2 (998 MHz to 1.2 GHz): use 990mV to 1025mV
+ 	{ 1,  998400, ACPUPLL, 5, 0,   990000,   990000, 7 },
+ 	{ 1, 1094400, ACPUPLL, 5, 0,   1000000,   1000000, 7 },
+ 	{ 1, 1190400, ACPUPLL, 5, 0,   1025000,   1025000, 7 },
+ 	// Overclock frequencies, full range (1.3 to 1.6 GHz): Use 1045mV to 1085mV
+ 	{ 1, 1305600, ACPUPLL, 5, 0,   1045000,   1045000, 7 },
+ 	{ 1, 1344000, ACPUPLL, 5, 0,   1050000,   1050000, 7 },
+ 	{ 1, 1401600, ACPUPLL, 5, 0,   1065000,   1065000, 7 },
+ 	{ 1, 1497600, ACPUPLL, 5, 0,   1075000,   1175000, 7 },
+ 	{ 1, 1593600, ACPUPLL, 5, 0,   1085000,   1085000, 7 },
 	{ 0 }
 };
 
 static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p2[] = {
-	{ 1,  300000, PLL0,    4, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  384000, ACPUPLL, 5, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  600000, PLL0,    4, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  787200, ACPUPLL, 5, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  998400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1094400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1190400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
+    // Underclock frequencies (96 to 249 MHz): use 855mV to 875mV
+ 	{ 1,   96000, ACPUPLL, 5, 2,   855000,   855000, 4 },
+ 	{ 1,  192000, ACPUPLL, 5, 2,   865000,   865000, 4 },
+ 	{ 1,  249600, ACPUPLL, 5, 2,   875000,   875000, 4 },
+ 	// Standard frequencies part 1 (300 to 787 MHz): use 900mV to 960mV
+ 	{ 1,  300000, PLL0,    4, 2,   900000,   900000, 4 },
+ 	{ 1,  384000, ACPUPLL, 5, 2,   920000,   920000, 4 },
+ 	{ 1,  600000, PLL0,    4, 0,   940000,   940000, 6 },
+ 	{ 1,  787200, ACPUPLL, 5, 0,   960000,   960000, 6 },
+ 	// Standard frequencies part 2 (998 MHz to 1.2 GHz): use 990mV to 1025mV
+ 	{ 1,  998400, ACPUPLL, 5, 0,   990000,   990000, 7 },
+ 	{ 1, 1094400, ACPUPLL, 5, 0,   1000000,   1000000, 7 },
+ 	{ 1, 1190400, ACPUPLL, 5, 0,   1025000,   1025000, 7 },
+ 	// Overclock frequencies, full range (1.3 to 1.6 GHz): Use 1045mV to 1085mV
+ 	{ 1, 1305600, ACPUPLL, 5, 0,   1045000,   1045000, 7 },
+ 	{ 1, 1344000, ACPUPLL, 5, 0,   1050000,   1050000, 7 },
+ 	{ 1, 1401600, ACPUPLL, 5, 0,   1065000,   1065000, 7 },
+ 	{ 1, 1497600, ACPUPLL, 5, 0,   1075000,   1175000, 7 },
+ 	{ 1, 1593600, ACPUPLL, 5, 0,   1085000,   1085000, 7 },
 	{ 0 }
 };
-
 static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p4[] = {
-	{ 1,  300000, PLL0,    4, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  384000, ACPUPLL, 5, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  600000, PLL0,    4, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  787200, ACPUPLL, 5, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  998400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1094400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1190400, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1305600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1344000, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
-	{ 1, 1401600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
+    // Underclock frequencies (96 to 249 MHz): use 855mV to 875mV
+ 	{ 1,   96000, ACPUPLL, 5, 2,   855000,   855000, 4 },
+ 	{ 1,  192000, ACPUPLL, 5, 2,   865000,   865000, 4 },
+ 	{ 1,  249600, ACPUPLL, 5, 2,   875000,   875000, 4 },
+ 	// Standard frequencies part 1 (300 to 787 MHz): use 900mV to 960mV
+ 	{ 1,  300000, PLL0,    4, 2,   900000,   900000, 4 },
+ 	{ 1,  384000, ACPUPLL, 5, 2,   920000,   920000, 4 },
+ 	{ 1,  600000, PLL0,    4, 0,   940000,   940000, 6 },
+ 	{ 1,  787200, ACPUPLL, 5, 0,   960000,   960000, 6 },
+ 	// Standard frequencies part 2 (998 MHz to 1.2 GHz): use 990mV to 1025mV
+ 	{ 1,  998400, ACPUPLL, 5, 0,   990000,   990000, 7 },
+ 	{ 1, 1094400, ACPUPLL, 5, 0,   1000000,   1000000, 7 },
+ 	{ 1, 1190400, ACPUPLL, 5, 0,   1025000,   1025000, 7 },
+ 	// Overclock frequencies, full range (1.3 to 1.6 GHz): Use 1045mV to 1085mV
+ 	{ 1, 1305600, ACPUPLL, 5, 0,   1045000,   1045000, 7 },
+ 	{ 1, 1344000, ACPUPLL, 5, 0,   1050000,   1050000, 7 },
+ 	{ 1, 1401600, ACPUPLL, 5, 0,   1065000,   1065000, 7 },
+ 	{ 1, 1497600, ACPUPLL, 5, 0,   1075000,   1175000, 7 },
+ 	{ 1, 1593600, ACPUPLL, 5, 0,   1085000,   1085000, 7 },
 	{ 0 }
 };
 
 static struct clkctl_acpu_speed acpu_freq_tbl_8226_1p6[] = {
-	{ 1,  300000, PLL0,    4, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  384000, ACPUPLL, 5, 2,   CPR_CORNER_2,    0, 4 },
-	{ 1,  600000, PLL0,    4, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  787200, ACPUPLL, 5, 0,   CPR_CORNER_4, 0, 6 },
-	{ 1,  998400, ACPUPLL, 5, 0,   CPR_CORNER_5,  0, 7 },
-	{ 1, 1094400, ACPUPLL, 5, 0,   CPR_CORNER_6,  0, 7 },
-	{ 1, 1190400, ACPUPLL, 5, 0,   CPR_CORNER_7,  0, 7 },
-	{ 1, 1305600, ACPUPLL, 5, 0,   CPR_CORNER_8,  0, 7 },
-	{ 1, 1344000, ACPUPLL, 5, 0,   CPR_CORNER_9,  0, 7 },
-	{ 1, 1401600, ACPUPLL, 5, 0,   CPR_CORNER_10,  0, 7 },
-	{ 1, 1497600, ACPUPLL, 5, 0,   CPR_CORNER_11,  0, 7 },
-	{ 1, 1593600, ACPUPLL, 5, 0,   CPR_CORNER_12,  0, 7 },
+    // Underclock frequencies (96 to 249 MHz): use 855mV to 875mV
+ 	{ 1,   96000, ACPUPLL, 5, 2,   855000,   855000, 4 },
+ 	{ 1,  192000, ACPUPLL, 5, 2,   865000,   865000, 4 },
+ 	{ 1,  249600, ACPUPLL, 5, 2,   875000,   875000, 4 },
+ 	// Standard frequencies part 1 (300 to 787 MHz): use 900mV to 960mV
+ 	{ 1,  300000, PLL0,    4, 2,   900000,   900000, 4 },
+ 	{ 1,  384000, ACPUPLL, 5, 2,   920000,   920000, 4 },
+ 	{ 1,  600000, PLL0,    4, 0,   940000,   940000, 6 },
+ 	{ 1,  787200, ACPUPLL, 5, 0,   960000,   960000, 6 },
+ 	// Standard frequencies part 2 (998 MHz to 1.2 GHz): use 990mV to 1025mV
+ 	{ 1,  998400, ACPUPLL, 5, 0,   990000,   990000, 7 },
+ 	{ 1, 1094400, ACPUPLL, 5, 0,   1000000,   1000000, 7 },
+ 	{ 1, 1190400, ACPUPLL, 5, 0,   1025000,   1025000, 7 },
+ 	// Overclock frequencies, full range (1.3 to 1.6 GHz): Use 1045mV to 1085mV
+ 	{ 1, 1305600, ACPUPLL, 5, 0,   1045000,   1045000, 7 },
+ 	{ 1, 1344000, ACPUPLL, 5, 0,   1050000,   1050000, 7 },
+ 	{ 1, 1401600, ACPUPLL, 5, 0,   1065000,   1065000, 7 },
+ 	{ 1, 1497600, ACPUPLL, 5, 0,   1075000,   1175000, 7 },
+ 	{ 1, 1593600, ACPUPLL, 5, 0,   1085000,   1085000, 7 },
 	{ 0 }
 };
 
@@ -124,7 +163,7 @@ static struct clkctl_acpu_speed acpu_freq_tbl_8610[] = {
 static struct clkctl_acpu_speed *pvs_tables_8226[NUM_SPEED_BIN] = {
 	[0] = acpu_freq_tbl_8226_1p2,
 	[6] = acpu_freq_tbl_8226_1p2,
-	[2] = acpu_freq_tbl_8226_1p2,
+	[2] = acpu_freq_tbl_8226_1p4,
 	[5] = acpu_freq_tbl_8226_1p4,
 	[4] = acpu_freq_tbl_8226_1p4,
 	[7] = acpu_freq_tbl_8226_1p4,
