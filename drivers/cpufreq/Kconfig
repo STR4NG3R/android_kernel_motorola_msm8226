@@ -214,7 +214,8 @@ config CPU_FREQ_GOV_CONSERVATIVE
 
 config CPU_FREQ_GOV_XPERIENCE
 	 tristate "'xperience' cpufreq governor"
-	 depends on CPU_FREQ+	 help
+	 depends on CPU_FREQ
+	 help
 	'XPerience' - a "powered and smart" governor
 
 menu "x86 CPU frequency scaling drivers"
