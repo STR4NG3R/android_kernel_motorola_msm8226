@@ -32,8 +32,9 @@ nocol='\033[0m'         # Default
 export ARCH=arm
 export SUBARCH=arm
 export KBUILD_BUILD_USER="culcalkin"
-export KBUILD_BUILD_HOST="tr4ng3r"
-export CROSS_COMPILE=/home/str4ng3r/tool/bin/arm-eabi-
+export KBUILD_BUILD_HOST="str4ng3r"
+export CROSS_COMPILE=~/UTC4.8/bin/arm-eabi-
+
 
 # Compilation Scripts Are Below
 compile_kernel ()
